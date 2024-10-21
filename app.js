@@ -14,11 +14,16 @@ const character = {
     }
 }   
 
-let racetype
-let weapontype
-let playeLife = 10
-let computerLife = 10
+// let racetype             //<<--- this are not needed
+// let weapontype       
+let lifePlayer = 0;
+let lifeNPC = 0;
 
+const getRandomNum = (max) => {
+    return Math.floor(Math.random() * max);      //<<----- random Number Generator - CL
+}
+
+// console.log(getRandomNum(6))
 
 
 //This is selecting the race. it takes the users input, and checks it agains 3 predetermained entries.
@@ -47,17 +52,19 @@ const pickRace = () => {
 //sort and shield has a numerical value of 1, battle axe has a numerical value of 2, bow and arrow has a numerical value of 3
  const pickWeapon = () => {
     const weaponChoice = prompt(`1 - Sword amd Shield,  2 - Battle Axe, 3 - Bow and Arrow `) //asking the user what they would like to pick
-    if (weaponChoice === `1`) { //comparing the choice the user made to the predetermained selection 
-        weapontype = `Sword and Shield`//assigning the weapontype
+    if (weaponChoice == 1) { //comparing the choice the user made to the predetermained selection 
+        character.weapon = `Sword and Shield`//assigning the weapontype
         character.attack += 1
         character.defense += 2
+
     }
-     if (weaponChoice === `2`) {  //comparing the choice the user made to the predetermained selection 
-        weapontype = `Battle Axe`   //assigning the weapontype
+     else if (weaponChoice == 2) {  //comparing the choice the user made to the predetermained selection 
+        character.weapon = `Battle Axe`   //assigning the weapontype
         character.attack += 3
+        character.defense += 0
     }
-     if (weaponChoice === `3`) {   //comparing the choice the user made to the predetermained selection 
-        weapontype = `Bow and Arrow` //assigning the weapontype
+     else if (weaponChoice == 3) {   //comparing the choice the user made to the predetermained selection 
+        character.weapon = `Bow and Arrow` //assigning the weapontype
         character.attack += 2
         character.defense += 1
     }
@@ -67,7 +74,11 @@ const pickRace = () => {
 };
 
 
+// This will always run first!
 const init = () => {
+    lifePlayer = 10;
+    lifeNPC = 10;
+
     // pickName()
     console.log("what race do you want to choose?");
     pickRace()
@@ -76,6 +87,7 @@ const init = () => {
     pickWeapon()
     console.log(`You have choosen ${weapontype} for your weapn.`);
     console.log(character)
+    // pickArmor
 } 
 
 init()
@@ -85,11 +97,6 @@ init()
 // ================================================================ Put all this code in a init Function==================
 
 //===We'll add the armor choice function here.=== -CL
-// pickArmor = () => {
-
-// }
-
-
 
 // const username = prompt('What is your name? ');
 // console.log(`Your name is ${username}.`);
@@ -134,28 +141,14 @@ init()
 
 //attack and heal functions
 
-// randomeNumGen = () => {
-//     min = Math.ceil(min);
-//     max = MathFloor(max);
-//     return Math.floor(Math.random() * (max - min +1)) +min;
-// }
-
-// let randomNumber = getRandomInt(0, 5);
-// console.log(randomNumber);
-
-
-
-
-
-
 //player turn
-playerturn = () => {
+turnPlayer = () => {
     console.log(`player life is ${playeLife} and computer life is ${computerLife}`)
 
     const playerTurnChoice = prompt(`tbd`)//todo
         if (playerTurnChoice === `attack`) {
             //attack function lose health from computer
-            if (weaponChoice === `1`) {
+            if (character.weapon === true) {
                 computerLife -= 1 //sword and shield extra defense for the shield +1 attack +2 defence
             }
             else if (weaponChoice === `2`) {
@@ -182,15 +175,19 @@ evaluate = () => {
 }
 
 
-computerturn = () => {
+//NPC turn
+tunrNPC = () => {
+    if (getRandomNum(6) >= 3){
 
 
+    } else { 
     //computer gets to pick attack or heal
+    }
 }
 
 
 
 
 
-//computer turn
+//NPC turn
 
