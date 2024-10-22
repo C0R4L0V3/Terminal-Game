@@ -23,7 +23,7 @@ const mob = {
 // let weapontype       
 let playerLife = 0;
 let mobLife = 0;
-
+let turnCount = 0;
 
 const randomDice = (min, max) => {              //<<-------- use randomDice(1, 9)for D8 random(1, 7) for a D6
     const minDice = Math.ceil(min)                      
@@ -115,8 +115,12 @@ const pickArmor = () => {
 
 
 // Evaluation  Phase Code
-evaluatePhase = () => {                                                      //<<----- this evaluation code should  ran after each turn - CL **UNTESTED**
-    if (playerLife === 0){  
+evaluatePhase = () => { 
+    console.log(`evaluation phase for testing`);
+    // console.log(turnCount);
+    
+                                                         //<<----- this evaluation code should  ran after each turn - CL **UNTESTED**
+    if (playerLife <= 0){  
         console.log(`Game over you lost!`)
         const gameOver = prompt(`Would you like to try again? yes no `)
             if (gameOver === `yes`){
@@ -124,7 +128,7 @@ evaluatePhase = () => {                                                      //<
             }else {
                 console.log(`Thank you for playing`)
             }
-    } else if (mobLife === 0){
+    } else if (mobLife <= 0){
         console.log(`Game over you won!`)
         const gameOver = prompt(`Would you like to try again? yes no `)
             if (gameOver === `yes`){
@@ -132,14 +136,35 @@ evaluatePhase = () => {                                                      //<
             }else {
                 console.log(`Thank you for playing`)
             }
+    } else {
+        // whatTurn();
     }
+    
 
 }
 
+whatTurn = () => {// goal of this is to switch turns between npc and player. Running count. 0 and 1. If the count is zero, its the players turn, if it is 1 its the computers turn.
+    if (turnCount == 0) {
+        console.log(`Players Turn`);
+        playerTurn(); // this will run the players turn then add 1 to the turn cound. switching the turns. UNTESTED.
+        turnCount = turnCount + 1;
+        console.log(turnCount);
+    }
+    else if (turnCount == 1) {//this will run the NPC turn then SUBTRACT 1 to the turn cound. switching the turns. UNTESTED.
+        console.log(`Mob Turn`);
+        mobTurn();
+        turnCount--;
+        console.log(turnCount);
+    }
+}
+
+
+
+
 // This will always run first!
 const init = () => {
-    lifePlayer = 50;
-    lifeNPC = 50;
+    playerLife = 50;
+    mobLife = 50;
 
     pickName()
    
@@ -207,15 +232,17 @@ init()
 //attack and heal functions
 
 //player turn
-playerTurn = () => {
-    console.log(`player HP:${playerLife} /n mob HP: ${mobLife}`)
 
-    const playerTurnChoice = prompt(`tbd`)//todo
+
+playerTurn = () => {
+    console.log(`player HP:${playerLife} \n mob HP: ${mobLife}`)
+
+    const playerTurnChoice = prompt(`Attack or Heal?`)//todo
         if (playerTurnChoice === `Attack`) {
             //attack function lose health from computer
             damage = (randomDice(1, 9) + character.baseAttack) - mob.baseDefense
                 mobLife -= damage         
-                console.log(`You have attacked the mob`, `Mob took ${damge}`)       //<<--- code for attack rolls againt mob, this calculates on total attack power, not weapon selection, removed previous code - CL
+                console.log(`You have attacked the mob`, `Mob took ${damage}`)       //<<--- code for attack rolls againt mob, this calculates on total attack power, not weapon selection, removed previous code - CL
         }
         // else if(){
         //     //maybe a defense option to bolster defense stat?
@@ -223,28 +250,33 @@ playerTurn = () => {
         // }
         else if (playerTurnChoice === `Heal`) {
             //player heal function add health to player , should we use potion count??
+            playerLife += 10
         }
         else {
             console.log(`invalid choice please choose better!`)
-            playerturn()
+            playerTurn()
         }      
-        evaluatePhase() //<<--- evaluatephase function - CL
-    
+    evaluatePhase() //<<--- evaluatephase function - CL
+    mobTurn()       
 }
 
 //NPC turn
 mobTurn = () => {
     
-    if (randomDice(1, 7) >= 4){
+        if (randomDice(1, 7) >= 4){
         
         damage = (randomDice(1, 9) + mob.baseAttack) - character.baseDefense  // <<---- code for mob attack roll against player - CL **UNTESTED**
         playerLife -= damage
-        console.log(`Mob has attacked you`, `You took ${damge}` )  //<---- change mob name to something else
-    } else { 
-    //computer gets to pick attack or heal
-    }
+        console.log(`Mob has attacked you`, `You took ${damage}` )  //<---- change mob name to something else
+        } else { 
+        //computer gets to pick attack or heal
+        }
 
     evaluatePhase()  //<<--- evaluatephase function - CL
+    playerTurn() // this will loop into the players turn. as long as either party hasnt won/lost, it will keep looping
 }
-
+gameStart = () => {
+    playerTurn()
+}
+gameStart()
 
