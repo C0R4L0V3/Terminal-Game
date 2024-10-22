@@ -7,11 +7,10 @@ const character = {
     weapon: null,
     attack:  0,
     defense: 0,
-    backpack: {
-        potions: null, //<<--- we'll add a quantity as we expand
-        arrows: null, //<<--- we'll add a quantity as we eqpand
-
-    }
+    backpack: [
+        {potions: null}, //<<--- we'll add a quantity as we expand
+        {arrows: null}, //<<--- we'll add a quantity as we eqpand
+    ]
 }   
 
 // let racetype             //<<--- this are not needed
@@ -24,7 +23,11 @@ const getRandomNum = (max) => {
 }
 
 // console.log(getRandomNum(6))
-
+const pickName = () => {
+    const username = prompt('What is your name? ');
+    character.name = `${username}`
+    console.log(`Your name is ${username}`);
+}
 
 //This is selecting the race. it takes the users input, and checks it agains 3 predetermained entries.
 // if the user enters something that does not work, we call the function back at the bottom
@@ -74,20 +77,46 @@ const pickRace = () => {
 };
 
 
+//This function will be for the user to choose their armor type.  
+const pickArmor = () => {
+    const armorChoice = prompt(`1 - Heavy Armor, 2. Medium Armor, 3. Light Armor`)
+    if (armorChoice == 1) { //comparing the choicevalue to determine the armor type
+        character.armor = `Heavy Armor`    // assigning the armor-type
+        character.attack = 0
+        character.defense = 0
+    }
+    else if (armorChoice == 2) { //comparing the choicevalue to determine the armor type
+        character.armor = `Medium Armor`    //assigning the armor-type
+        character.attack = 0
+        character.defense = 0
+    }
+    else if(armorChoice == 3) {
+        character.armor = `Light Armor`  //comparing the choicevalue to determine the armor type
+        character.attack = 0  //assigning the armor-type
+        character.defense = 0
+    }
+    else{console.log('invalid choice, choose better')
+        pickArmor()
+    }
+}
+
+
 // This will always run first!
 const init = () => {
     lifePlayer = 10;
     lifeNPC = 10;
 
-    // pickName()
+    pickName()
     console.log("what race do you want to choose?");
     pickRace()
     console.log(`Your chosen race is ${racetype}.`);
     console.log(`what weapons do you want to choose?`)
     pickWeapon()
-    console.log(`You have choosen ${weapontype} for your weapn.`);
+    console.log(`You have choosen ` + console.log(character.weapon) + ` for your weapon.`);
+    pickArmor()
+    console.log(`You have chosen ` + console.log(character.armor) + ` for your armor`);
+
     console.log(character)
-    // pickArmor
 } 
 
 init()
