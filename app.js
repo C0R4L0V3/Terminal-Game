@@ -1,5 +1,7 @@
 const prompt = require('prompt-sync')();
 
+const devs = [`Miles Tarricone`, `Coraline Love`, `Jen Cortez-Walters`]
+
 const character = { 
     name: null, 
     race: null,
@@ -180,7 +182,33 @@ const init = () => {
     console.log(character)
 } 
 
-init()
+mainMenu = () => {
+    console.log(`MAIN MANU`);
+    console.log(`START GAME 1`);
+    console.log(`CREDITS 2`);
+    console.log(`QUIT 3`);
+    let userMenuChoice = prompt(`please choose 1, 2, 3`)
+
+    if (userMenuChoice === `1`) {
+        gameStart()
+    }
+    else if (userMenuChoice === `2`) {
+        console.log(devs)
+    }
+    else if (userMenuChoice === `3`) {
+        console.log(`have a nice day`)
+        process.exit();
+    }
+}
+
+
+
+
+
+
+
+
+// init()
 
 
 
@@ -205,21 +233,21 @@ init()
 //======================================================= Pushed character object to the top================================
 //character sheet
 // const character = { 
-//     name:`${username}`, 
-//     race:`${racetype}`,
-//     armor: null,
-//     weapon: `${weapontype}`,
-//     attack:  0,
-//     defense: 0,
-//     backpack: {
+    //     name:`${username}`, 
+    //     race:`${racetype}`,
+    //     armor: null,
+    //     weapon: `${weapontype}`,
+    //     attack:  0,
+    //     defense: 0,
+    //     backpack: {
 //         potions: null, //<<--- we'll add a quantity as we expand
 //         arrows: null, //<<--- we'll add a quantity as we eqpand
 
 //     }
 // }   
-    
+
 // console.log(`Your weapon is ` +  ${character.weapon});
-  
+
 //=======================================================================================================================
 
 
@@ -236,47 +264,53 @@ init()
 
 playerTurn = () => {
     console.log(`player HP:${playerLife} \n mob HP: ${mobLife}`)
-
+    
     const playerTurnChoice = prompt(`Attack or Heal?`)//todo
-        if (playerTurnChoice === `Attack`) {
+    if (playerTurnChoice === `Attack`) {
             //attack function lose health from computer
             damage = (randomDice(1, 9) + character.baseAttack) - mob.baseDefense
-                mobLife -= damage         
-                console.log(`You have attacked the mob`, `Mob took ${damage}`)       //<<--- code for attack rolls againt mob, this calculates on total attack power, not weapon selection, removed previous code - CL
+            mobLife -= damage         
+            console.log(`You have attacked the mob`, `Mob took ${damage}`)       //<<--- code for attack rolls againt mob, this calculates on total attack power, not weapon selection, removed previous code - CL
         }
         // else if(){
-        //     //maybe a defense option to bolster defense stat?
-
-        // }
-        else if (playerTurnChoice === `Heal`) {
-            //player heal function add health to player , should we use potion count??
-            playerLife += 10
-        }
-        else {
-            console.log(`invalid choice please choose better!`)
-            playerTurn()
-        }      
-    evaluatePhase() //<<--- evaluatephase function - CL
+            //     //maybe a defense option to bolster defense stat?
+            
+            // }
+            else if (playerTurnChoice === `Heal`) {
+                //player heal function add health to player , should we use potion count??
+                playerLife += 10
+            }
+            else {
+                console.log(`invalid choice please choose better!`)
+                playerTurn()
+            }      
+            evaluatePhase() //<<--- evaluatephase function - CL
     mobTurn()       
 }
 
 //NPC turn
 mobTurn = () => {
+    //computer gets to pick attack or heal
     
-        if (randomDice(1, 7) >= 4){
+    if (randomDice(1, 7) >= 4){
         
-        damage = (randomDice(1, 9) + mob.baseAttack) - character.baseDefense  // <<---- code for mob attack roll against player - CL **UNTESTED**
+        damage = (randomDice(1, 9) + mob.baseAttack + 2) - character.baseDefense  // <<---- code for mob attack roll against player - CL **UNTESTED**
         playerLife -= damage
         console.log(`Mob has attacked you`, `You took ${damage}` )  //<---- change mob name to something else
-        } else { 
-        //computer gets to pick attack or heal
+    } else { 
+        console.log(`Mob Heals this turn`);
+            mobLife += 8
+            
         }
-
+        
     evaluatePhase()  //<<--- evaluatephase function - CL
     playerTurn() // this will loop into the players turn. as long as either party hasnt won/lost, it will keep looping
 }
 gameStart = () => {
+    init()
     playerTurn()
 }
-gameStart()
+// gameStart()
 
+
+mainMenu()
