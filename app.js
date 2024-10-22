@@ -177,7 +177,7 @@ init()
 //===envoke Armor function here=== 
 
 // console.log(`Your have choose ${armortype} for your aromor.`);
-
+//======================================================= Pushed character object to the top================================
 //character sheet
 // const character = { 
 //     name:`${username}`, 
@@ -208,13 +208,14 @@ init()
 
 //player turn
 playerTurn = () => {
-    console.log(`player HP:${playeLife} /n mob HP: ${mobLife}`)
+    console.log(`player HP:${playerLife} /n mob HP: ${mobLife}`)
 
     const playerTurnChoice = prompt(`tbd`)//todo
         if (playerTurnChoice === `Attack`) {
             //attack function lose health from computer
             damage = (randomDice(1, 9) + character.baseAttack) - mob.baseDefense
-                mobLife -= damage                   //<<--- code for attack rolls againt mob, this calculates on total attack power, not weapon selection, removed previous code - CL
+                mobLife -= damage         
+                console.log(`You have attacked the mob`, `Mob took ${damge}`)       //<<--- code for attack rolls againt mob, this calculates on total attack power, not weapon selection, removed previous code - CL
         }
         // else if(){
         //     //maybe a defense option to bolster defense stat?
@@ -233,9 +234,12 @@ playerTurn = () => {
 
 //NPC turn
 mobTurn = () => {
+    
     if (randomDice(1, 7) >= 4){
+        
         damage = (randomDice(1, 9) + mob.baseAttack) - character.baseDefense  // <<---- code for mob attack roll against player - CL **UNTESTED**
         playerLife -= damage
+        console.log(`Mob has attacked you`, `You took ${damge}` )  //<---- change mob name to something else
     } else { 
     //computer gets to pick attack or heal
     }
