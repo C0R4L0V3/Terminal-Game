@@ -3,26 +3,36 @@ const prompt = require('prompt-sync')();
 const character = { 
     name: null, 
     race: null,
-    armor: null,
+    armor: null,        // Null values will get filled when prompted - CL
     weapon: null,
-    attack:  0,
-    defense: 0,
+    baseAttack:  0,
+    baseDefense: 0,
     backpack: [
         {potions: null}, //<<--- we'll add a quantity as we expand
         {arrows: null}, //<<--- we'll add a quantity as we eqpand
     ]
 }   
 
-// let racetype             //<<--- this are not needed
-// let weapontype       
-let lifePlayer = 0;
-let lifeNPC = 0;
-
-const getRandomNum = (max) => {
-    return Math.floor(Math.random() * max);      //<<----- random Number Generator - CL
+// === Mob Object ====
+const mob = {
+    baseAttack: 0,    // 0 values for now - CL
+    baseDefense: 0, 
 }
 
-// console.log(getRandomNum(6))
+// let racetype       //<<--- these are not needed -CL
+// let weapontype       
+let playerLife = 0;
+let mobLife = 0;
+
+
+const randomDice = (min, max) => {              //<<-------- use randomDice(1, 9)for D8 random(1, 7) for a D6
+    const minDice = Math.ceil(min)                      
+    const maxDice = Math.floor(max)
+    return Math.floor(Math.random() * (maxDice - minDice) + minDice) 
+}
+
+// console.log(getRandomNum(6)) <<---use parameter of 6 to get a random number between 0 and 5 - CL
+
 const pickName = () => {
     const username = prompt('What is your name? ');
     character.name = `${username}`
@@ -32,6 +42,7 @@ const pickName = () => {
 //This is selecting the race. it takes the users input, and checks it agains 3 predetermained entries.
 // if the user enters something that does not work, we call the function back at the bottom
 const pickRace = () => {
+    console.log("what race do you want to choose?")
     const raceChoice = prompt(`Please select Human, Elf, or Dwarf. `)
     if (raceChoice === `Human`) {
         racetype = `Human`
@@ -54,22 +65,23 @@ const pickRace = () => {
 //This function is to take imput from the user, and pick a weapon from 3 predetermained weapon choices. 
 //sort and shield has a numerical value of 1, battle axe has a numerical value of 2, bow and arrow has a numerical value of 3
  const pickWeapon = () => {
+    console.log(`what weapon do you want to choose?`)
     const weaponChoice = prompt(`1 - Sword amd Shield,  2 - Battle Axe, 3 - Bow and Arrow `) //asking the user what they would like to pick
     if (weaponChoice == 1) { //comparing the choice the user made to the predetermained selection 
         character.weapon = `Sword and Shield`//assigning the weapontype
-        character.attack += 1
-        character.defense += 2
+        character.baseAttack += 1
+        character.baseDefense += 2
 
     }
      else if (weaponChoice == 2) {  //comparing the choice the user made to the predetermained selection 
         character.weapon = `Battle Axe`   //assigning the weapontype
-        character.attack += 3
-        character.defense += 0
+        character.baseAttack += 3
+        character.baseDefense += 0
     }
      else if (weaponChoice == 3) {   //comparing the choice the user made to the predetermained selection 
         character.weapon = `Bow and Arrow` //assigning the weapontype
-        character.attack += 2
-        character.defense += 1
+        character.baseAttack += 2
+        character.baseDefense += 1
     }
         else {console.log(`invalid choice, choose better`)//if the user did not pick an option that is predetermained, this calls the function again. 
     pickWeapon()//call the function again. 
@@ -77,23 +89,23 @@ const pickRace = () => {
 };
 
 
-//This function will be for the user to choose their armor type.  
+//This function will be for the user to choose their armor type.  - JCW
 const pickArmor = () => {
-    const armorChoice = prompt(`1 - Heavy Armor, 2. Medium Armor, 3. Light Armor`)
-    if (armorChoice == 1) { //comparing the choicevalue to determine the armor type
-        character.armor = `Heavy Armor`    // assigning the armor-type
-        character.attack = 0
-        character.defense = 0
+    const armorChoice = prompt(`1 - Heavy Armor, 2. Medium Armor, 3. Light Armor `)
+    if (armorChoice == 1) {             //comparing the choicevalue to determine the armor type & assigning the armor-type to character object  - JCW
+        character.armor = `Heavy Armor`    
+        character.baseAttack += 0
+        character.baseDefense += 0       //<<---temp  0 values - CL
+   }
+    else if (armorChoice == 2) {         //comparing the choicevalue to determine the armor type & assigning the armor-type to character object  -JCW
+        character.armor = `Medium Armor` 
+        character.baseAttack += 0
+        character.baseDefense += 0       //<<---temp  0 values - CL
     }
-    else if (armorChoice == 2) { //comparing the choicevalue to determine the armor type
-        character.armor = `Medium Armor`    //assigning the armor-type
-        character.attack = 0
-        character.defense = 0
-    }
-    else if(armorChoice == 3) {
-        character.armor = `Light Armor`  //comparing the choicevalue to determine the armor type
-        character.attack = 0  //assigning the armor-type
-        character.defense = 0
+    else if(armorChoice == 3) {         //comparing the choicevalue to determine the armor type & assigning the armor-type to character object -JCW
+        character.armor = `Light Armor`  
+        character.baseAttack += 0 
+        character.baseDefense += 0       //<<---temp  0 values - CL
     }
     else{console.log('invalid choice, choose better')
         pickArmor()
@@ -101,20 +113,44 @@ const pickArmor = () => {
 }
 
 
+
+// Evaluation  Phase Code
+evaluatePhase = () => {                                                      //<<----- this evaluation code should  ran after each turn - CL **UNTESTED**
+    if (playerLife === 0){  
+        console.log(`Game over you lost!`)
+        const gameOver = prompt(`Would you like to try again? yes no `)
+            if (gameOver === `yes`){
+                init()
+            }else {
+                console.log(`Thank you for playing`)
+            }
+    } else if (mobLife === 0){
+        console.log(`Game over you won!`)
+        const gameOver = prompt(`Would you like to try again? yes no `)
+            if (gameOver === `yes`){
+                init()
+            }else {
+                console.log(`Thank you for playing`)
+            }
+    }
+
+}
+
 // This will always run first!
 const init = () => {
-    lifePlayer = 10;
-    lifeNPC = 10;
+    lifePlayer = 50;
+    lifeNPC = 50;
 
     pickName()
-    console.log("what race do you want to choose?");
+   
     pickRace()
     console.log(`Your chosen race is ${racetype}.`);
-    console.log(`what weapons do you want to choose?`)
+    
     pickWeapon()
-    console.log(`You have choosen ` + console.log(character.weapon) + ` for your weapon.`);
+    console.log(`You have choosen ` + character.weapon + ` for your weapon.`);
+
     pickArmor()
-    console.log(`You have chosen ` + console.log(character.armor) + ` for your armor`);
+    console.log(`You have chosen ` + character.armor + ` for your armor`);
 
     console.log(character)
 } 
@@ -171,52 +207,40 @@ init()
 //attack and heal functions
 
 //player turn
-turnPlayer = () => {
-    console.log(`player life is ${playeLife} and computer life is ${computerLife}`)
+playerTurn = () => {
+    console.log(`player HP:${playeLife} /n mob HP: ${mobLife}`)
 
     const playerTurnChoice = prompt(`tbd`)//todo
-        if (playerTurnChoice === `attack`) {
+        if (playerTurnChoice === `Attack`) {
             //attack function lose health from computer
-            if (character.weapon === true) {
-                computerLife -= 1 //sword and shield extra defense for the shield +1 attack +2 defence
-            }
-            else if (weaponChoice === `2`) {
-                computerLife -= 3 // batte axe all attack 3 attack
-            }
-            else if (weaponChoice === `3`) {
-                computerLife -= 2 //bow gets extra defense due to mobility +2 attack +1 defence
-            }
+            damage = (randomDice(1, 9) + character.baseAttack) - mob.baseDefense
+                mobLife -= damage                   //<<--- code for attack rolls againt mob, this calculates on total attack power, not weapon selection, removed previous code - CL
         }
-        else if (playerTurnChoice === `heal`) {
-            //player heal function add health to player 
+        // else if(){
+        //     //maybe a defense option to bolster defense stat?
+
+        // }
+        else if (playerTurnChoice === `Heal`) {
+            //player heal function add health to player , should we use potion count??
         }
         else {
             console.log(`invalid choice please choose better!`)
             playerturn()
         }      
-
-    console.log(`player life is ${playeLife} and computer life is ${computerLife}`)
+        evaluatePhase() //<<--- evaluatephase function - CL
+    
 }
-
-
-evaluate = () => {
-
-}
-
 
 //NPC turn
-tunrNPC = () => {
-    if (getRandomNum(6) >= 3){
-
-
+mobTurn = () => {
+    if (randomDice(1, 7) >= 4){
+        damage = (randomDice(1, 9) + mob.baseAttack) - character.baseDefense  // <<---- code for mob attack roll against player - CL **UNTESTED**
+        playerLife -= damage
     } else { 
     //computer gets to pick attack or heal
     }
+
+    evaluatePhase()  //<<--- evaluatephase function - CL
 }
 
-
-
-
-
-//NPC turn
 
